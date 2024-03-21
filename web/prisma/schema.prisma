@@ -1,0 +1,39 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Log {
+  id          String    @id @default(uuid())
+  email       String    @unique
+  otp         String
+  logged      Boolean   @default(false)
+  logged_on   DateTime?
+  ip_address  String?
+  user_agent  String?
+  otp_sent_at DateTime?
+  updated_at  DateTime?
+  created_at  DateTime? @default(now())
+}
+
+model Admin {
+  id            String         @id @default(uuid())
+  email         String         @unique
+  username      String
+  mobile        String
+  organizations Organization[]
+}
+
+model Organization {
+  id       String @id @default(uuid())
+  name     String @unique
+  admin_id String
+  admin    Admin  @relation(fields: [admin_id], references: [id])
+}
+
+//  const userAgent = req.headers['user-agent'];
+// const clientIP = req.headers['x-forwarded-for'] || req.ip;
